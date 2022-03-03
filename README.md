@@ -1,5 +1,26 @@
 # cms-application
 
+### Dockerized cms boot application
+#### Dockerfile - explained
+```
+FROM: As the base for our image, we'll take the Java-enabled Alpine Linux created in the previous section.
+ENV: Environment variables
+WORKDIR: Base directory
+EXPOSE: port on which the application should run
+COPY: We let Docker copy our jar file into the image.
+ENTRYPOINT: This will be the executable to start when the container is booting. We must define them as JSON-Array because we'll use an ENTRYPOINT in combination with a CMD for some application arguments.
+```
+#### docker commands:
+```
+docker build -t cmsbootdocker3mar22:1.0.0-SNAP .
+docker images | grep cmsbootdocker
+docker run -d --name cmsbootdocker3marcontainer -p 8887:8080 cmsbootdocker3mar22:1.0.0-SNAP` hostPort:containerPort
+docker ps -a
+docker logs -f cmsbootdocker3marcontainer
+docker stop cmsbootdocker3marcontainer
+docker rm cmsbootdocker3marcontainer
+```
+
 ### Running using command line from pom.xml level
 `mvn spring-boot:run`
 
@@ -40,4 +61,5 @@ insert into customer_management_app.customer values (3, 'om@om.com', 'omalwaysom
 
 ##### Reference
 https://www.bezkoder.com/spring-boot-postgresql-example/
+
 
