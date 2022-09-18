@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+    <if condition='property("spring.profiles.active").equals("")'>
+        <then>
+            <property scope="context" name="environment" value="local"/>
+        </then>
+        <else>
+            <property scope="context" name="environment" value="${spring.profiles.active}"/>
+        </else>
+    </if>
+
+    <property name="pattern"
+              value="TimeStamp:    %d{yyyy-MM-dd HH:mm:ss.SSS} %n{}smUser:         %X{smUser} %n{}Thread:       %thread %n{}level:     %level %n{}Class:        %logger %n{}Method:       %M ,Line: %L %n{}MessageId:    #0# %n{}Message:      %msg %n{}Request URI:  %X{uri} %n{}Http Method:  %X{requestMethod}%n{}" />
+    <property name="SPRING_LOGGER_LEVEL" value="on" />
+
+    <appender name="DebugLogSiftAppender" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator class="ch.qos.logback.classic.sift.JNDIBasedContextDiscriminator">
+            <defaultValue>unknown</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="DebugLogSiftAppender-cms"
+                      class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>ERROR</level>
+                    <onMatch>DENY</onMatch>
+                    <onMismatch>NEUTRAL</onMismatch>
+                </filter>
+                <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                    <evaluator>
+                        <expression>if( (mdc != null) &amp;&amp; (mdc.get("Performance") != null)) { return true;} else
+                            return false;
+                        </expression>
+                    </evaluator>
+                    <onMatch>DENY</onMatch>
+                    <onMismatch>NEUTRAL</onMismatch>
+                </filter>
+
+                <file>SystemOut.log</file>
+                <append>true</append>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <FileNamePattern>SystemOut%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                        <!-- or whenever the file size reaches 100MB -->
+                        <maxFileSize>100MB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                    <!-- keep 3 days' worth of history -->
+                    <maxHistory>10</maxHistory>
+                </rollingPolicy>
+
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <!-- <pattern>%d [%thread] %level %logger [%X{userId}] %msg  %n </pattern>  -->
+                    <pattern>%date [%thread] %mdc %-5level %logger %msg %n%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <root level="INFO">
+        <if condition='!${isLocal}'>
+            <then>
+                <appender-ref ref="COMMON_APPENDER"/>
+            </then>
+        </if>
+        <appender-ref ref="DebugLogSiftAppender"/>
+    </root>
+
+    <logger name="org.springframework" level="on" />
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <jmxConfigurator/>
+
+</configuration>

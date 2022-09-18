@@ -1,5 +1,7 @@
 package com.srione.cms.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,11 +21,17 @@ import java.util.TreeSet;
 @RequestMapping(value = "/collections")
 public class CollectionsController {
 
+    public static Logger LOGGER = LoggerFactory.getLogger("CollectionsController");
+
     @GetMapping("/doublelinkedlist")
     public static List<Integer> getIntegerList(){
         Integer[] intArray = {1,3,2,  4,2,  5};
         List<Integer> integerList = Arrays.asList(intArray);
         System.out.println("The result will have duplicates and un-ordered" +
+                "doublelinkedlist keeps the reference of both prev.item and next.item." +
+                "better performance for manipulating values" +
+                "duplicate values are allowed");
+        LOGGER.info("The result will have duplicates and un-ordered" +
                 "doublelinkedlist keeps the reference of both prev.item and next.item." +
                 "better performance for manipulating values" +
                 "duplicate values are allowed");
