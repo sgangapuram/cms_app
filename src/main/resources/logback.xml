@@ -65,6 +65,9 @@
     </root>
 
     <logger name="org.springframework" level="on" />
+    <logger name="org.springframework.cache" level="trace">
+        <appender-ref ref="STDOUT" />
+    </logger>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <jmxConfigurator/>
 
