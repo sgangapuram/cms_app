@@ -62,4 +62,15 @@ insert into customer_management_app.customer values (3, 'om@om.com', 'omalwaysom
 ##### Reference
 https://www.bezkoder.com/spring-boot-postgresql-example/
 
+Cacheable logs refer:
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
 
+    <logger name="org.springframework.cache" level="trace">
+        <appender-ref ref="STDOUT" />
+    </logger>
+</configuration>
